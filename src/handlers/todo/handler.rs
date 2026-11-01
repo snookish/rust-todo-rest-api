@@ -32,10 +32,10 @@ impl Handler {
         Json(payload): Json<CreateTodoRequest>,
     ) -> (StatusCode, Json<ListTodoResponse>) {
         let mut todos = TODOS.lock().unwrap();
-        let length = todos.len();
+        let id = (todos.len() + 1) as u64;
 
         todos.push(Todo {
-            id: length as u64,
+            id,
             title: payload.title,
             description: payload.description,
             is_completed: false,
