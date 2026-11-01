@@ -10,12 +10,12 @@ pub struct Todo {
 
 impl Todo {
     pub fn new(id: u64, title: impl Into<String>, description: impl Into<String>) -> Self {
-        return Self {
+        Self {
             id,
             title: title.into(),
             description: description.into(),
             is_completed: false,
-        };
+        }
     }
 }
 

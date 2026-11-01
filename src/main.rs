@@ -16,6 +16,8 @@ async fn main() -> anyhow::Result<()> {
         .route("/todos/{id}", get(todo::handler::Handler::get_by_id));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:5001").await?;
+
+    println!("Listening on: http://localhost:5001");
     axum::serve(listener, router).await?;
 
     Ok(())
