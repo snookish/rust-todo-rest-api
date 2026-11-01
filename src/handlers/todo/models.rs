@@ -23,3 +23,9 @@ impl Todo {
 pub struct ListTodoResponse {
     pub todos: Vec<Todo>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct CreateTodoRequest {
+    pub title: String,
+    pub description: String,
+}
