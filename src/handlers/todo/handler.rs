@@ -1,18 +1,20 @@
 use crate::handlers::todo::models::{CreateTodoRequest, ListTodoResponse, Todo};
 use axum::{Json, extract::Path, http::StatusCode};
 use std::sync::{
-    LazyLock, Mutex,
+    // LazyLock, Mutex,
     atomic::{AtomicU64, Ordering},
 };
+use tokio::sync::Mutex;
 
 static NEXT_ID: AtomicU64 = AtomicU64::new(1);
-static TODOS: LazyLock<Mutex<Vec<Todo>>> = LazyLock::new(|| Mutex::new(Vec::new()));
+static TODOS: Mutex<Vec<Todo>> = Mutex::const_new(Vec::new());
+// static TODOS: LazyLock<Mutex<Vec<Todo>>> = LazyLock::new(|| Mutex::new(Vec::new()));
 
 pub struct Handler;
 
 impl Handler {
     pub async fn list() -> (StatusCode, Json<ListTodoResponse>) {
-        let todos = TODOS.lock().unwrap();
+        let todos = TODOS.lock().await;
 
         (
             StatusCode::OK,
@@ -23,7 +25,7 @@ impl Handler {
     }
 
     pub async fn get_by_id(Path(id): Path<u64>) -> Result<Json<Todo>, StatusCode> {
-        let todos = TODOS.lock().unwrap();
+        let todos = TODOS.lock().await;
         let todo = todos.iter().find(|todo| todo.id == id).cloned();
 
         match todo {
@@ -35,7 +37,7 @@ impl Handler {
     pub async fn create(
         Json(payload): Json<CreateTodoRequest>,
     ) -> (StatusCode, Json<ListTodoResponse>) {
-        let mut todos = TODOS.lock().unwrap();
+        let mut todos = TODOS.lock().await;
         let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
 
         todos.push(Todo {
