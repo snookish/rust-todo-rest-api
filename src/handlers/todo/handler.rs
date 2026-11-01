@@ -1,7 +1,11 @@
 use crate::handlers::todo::models::{CreateTodoRequest, ListTodoResponse, Todo};
 use axum::{Json, extract::Path, http::StatusCode};
-use std::sync::{LazyLock, Mutex};
+use std::sync::{
+    LazyLock, Mutex,
+    atomic::{AtomicU64, Ordering},
+};
 
+static NEXT_ID: AtomicU64 = AtomicU64::new(1);
 static TODOS: LazyLock<Mutex<Vec<Todo>>> = LazyLock::new(|| Mutex::new(Vec::new()));
 
 pub struct Handler;
@@ -32,7 +36,7 @@ impl Handler {
         Json(payload): Json<CreateTodoRequest>,
     ) -> (StatusCode, Json<ListTodoResponse>) {
         let mut todos = TODOS.lock().unwrap();
-        let id = (todos.len() + 1) as u64;
+        let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
 
         todos.push(Todo {
             id,
