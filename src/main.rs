@@ -1,6 +1,6 @@
 use axum::{
     Router,
-    routing::{get, post},
+    routing::{delete, get, post},
 };
 use handlers::todo;
 
@@ -13,7 +13,8 @@ async fn main() -> anyhow::Result<()> {
     let router = Router::new()
         .route("/todos", get(todo::handler::Handler::list))
         .route("/todos", post(todo::handler::Handler::create))
-        .route("/todos/{id}", get(todo::handler::Handler::get_by_id));
+        .route("/todos/{id}", get(todo::handler::Handler::get_by_id))
+        .route("/todos/{id}", delete(todo::handler::Handler::delete_by_id));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:5001").await?;
 

@@ -57,4 +57,18 @@ impl Handler {
             }),
         )
     }
+
+    pub async fn delete_by_id(Path(id): Path<u64>) -> Result<Json<Todo>, StatusCode> {
+        // let mut todos = TODOS.lock().await;
+        let mut todos = TODOS.lock().unwrap();
+        let position = todos.iter().position(|todo| todo.id == id);
+
+        match position {
+            Some(pos) => {
+                let todo = todos.remove(pos);
+                Ok(Json(todo))
+            }
+            None => Err(StatusCode::NOT_FOUND),
+        }
+    }
 }
