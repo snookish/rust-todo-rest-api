@@ -2,13 +2,18 @@ use axum::{
     Router,
     routing::{delete, get, post},
 };
+
+use crate::db::pool::create_db_pool;
 use handlers::todo;
 
+mod db;
 mod handlers;
+mod service;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let _ = todo::models::Todo::new(1, "Learn Rust", "Be good at Rust");
+    let pool = create_db_pool()?;
+    let _todo_service = service::todo::Service::new(pool);
 
     let router = Router::new()
         .route("/todos", get(todo::handler::Handler::list))

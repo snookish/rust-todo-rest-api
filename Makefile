@@ -1,5 +1,11 @@
 .DEFAULT_GOAL := help
 DIESEL ?= diesel
+MYSQL_CLIENT_PREFIX ?= $(shell brew --prefix mysql-client 2>/dev/null)
+
+ifneq ($(wildcard $(MYSQL_CLIENT_PREFIX)/lib/pkgconfig),)
+export PKG_CONFIG_PATH := $(MYSQL_CLIENT_PREFIX)/lib/pkgconfig$(if $(PKG_CONFIG_PATH),:$(PKG_CONFIG_PATH))
+export PATH := $(MYSQL_CLIENT_PREFIX)/bin:$(PATH)
+endif
 
 .PHONY: help build release run test check fmt fmt-check lint clean doc db-create db-drop db-setup db-migrate db-migrate-prod db-rollback db-redo db-reset db-status db-schema db-migration
 
