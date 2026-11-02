@@ -38,12 +38,7 @@ impl Handler {
         let mut todos = TODOS.lock().unwrap();
         let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
 
-        todos.push(Todo {
-            id,
-            title: payload.title,
-            description: payload.description,
-            is_completed: false,
-        });
+        todos.push(Todo::new(id, payload.title, payload.description));
 
         (
             StatusCode::CREATED,

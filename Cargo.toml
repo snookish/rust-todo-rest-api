@@ -6,6 +6,9 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.104"
 axum = "0.8.9"
+chrono = { version = "0.4.45", features = ["serde"] }
+diesel = { version = "2.3.14", features = ["mysql", "chrono"] }
+diesel_migrations = { version = "2.3.2", features = ["mysql"] }
 serde = { version = "1.0.229", features = ["std", "derive"] }
 thiserror = "2.0.21"
 tokio = { version = "1.54.1", features = ["full"] }
