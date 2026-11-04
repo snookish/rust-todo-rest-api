@@ -6,7 +6,7 @@ use diesel::{
 
 use crate::db::{
     models::{self, CreateTodoCmd, Todo},
-    pool::DbError,
+    pool::{DbError, DbPool},
     schema,
 };
 
@@ -20,11 +20,11 @@ pub enum Error {
 }
 
 pub struct Service {
-    pool: Pool<ConnectionManager<MysqlConnection>>,
+    pool: DbPool,
 }
 
 impl Service {
-    pub fn new(pool: Pool<ConnectionManager<MysqlConnection>>) -> Self {
+    pub fn new(pool: DbPool) -> Self {
         Self { pool }
     }
 
